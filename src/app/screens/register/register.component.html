@@ -1,0 +1,31 @@
+<div style="display: flex; flex-direction: row; width: 100%; justify-content: center;">
+    <div style="width: 30vw; padding: 20px; border-radius: 10px; min-width: 300px;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
+        <h1 style="text-align: center;">Register</h1>
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <form style="width:50%; display: flex; flex-direction: column; justify-content: center;" (ngSubmit)="register()">
+                <mat-form-field appearance="fill">
+                    <mat-label>Email</mat-label>
+                    <input matInput placeholder="johnny@example.com" [formControl]="email" required autocomplete="email">
+                    <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Display Name</mat-label>
+                    <input matInput [formControl]="name" required>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" [formControl]="password" required autocomplete="new-password">
+                    <!-- <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Confirm Password</mat-label>
+                    <input matInput type="password" [formControl]="confirm" required autocomplete="new-password">
+                    <!-- <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->
+                </mat-form-field>
+                <button mat-raised-button type="submit" color="primary">Register</button>
+            </form>
+            <span style="margin-top: 10px;">Already have an account? <a routerLink="/login">Login</a></span>
+        </div>
+    </div>
+</div>

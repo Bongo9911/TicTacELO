@@ -1,0 +1,21 @@
+<div style="display: flex; flex-direction: row; width: 100%; justify-content: center;">
+    <div style="width: 30vw; padding: 20px; border-radius: 10px; min-width: 300px;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
+        <h1 style="text-align: center;">Login</h1>
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <form style="width:50%; display: flex; flex-direction: column; justify-content: center;" (ngSubmit)="login()">
+                <mat-form-field appearance="fill">
+                    <mat-label>Username or Email</mat-label>
+                    <input matInput [formControl]="name" required autocomplete="username">
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" [formControl]="password" required autocomplete="current-password">
+                    <!-- <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->
+                </mat-form-field>
+                <button mat-raised-button type="submit" color="primary">Login</button>
+            </form>
+            <span style="margin-top: 10px;">Don't have an account? <a routerLink="/register">Sign up!</a></span>
+        </div>
+    </div>
+</div>

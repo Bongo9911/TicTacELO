@@ -1,0 +1,27 @@
+<div style="display:flex; flex-direction: row; width: 100%; justify-content: center;">
+    <div>
+        <div *ngFor="let row of gameBoard.spaces; index as y" style="display: flex; flex-direction: row;">
+            <div *ngFor="let tile of row; index as x"
+                style="width: 10vw; height: 10vw; border: .2vw solid black; font-size: 10vw; text-align: center; vertical-align: middle; line-height: 10vw;"
+                [ngStyle]=" {'color': tile === 'X' ? 'red' : 'blue', 'cursor':  gameBoard.ended || tile !== '' ? 'default' : 'pointer'}"
+                (click)="setSpace(x,y)">
+                {{tile}}
+            </div>
+        </div>
+    </div>
+    <div style="height: calc(30vw + 10px); width: 20vw; margin-left: 1vw; display: flex; flex-direction: column; justify-content: center;">
+        <div style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; padding: 1vw .5vw; border-radius: .5vw;">
+            <div style="display: flex; justify-content: space-between; line-height: 2vw; vertical-align: middle;">
+                <span style="font-size: 2vw; padding-bottom: .25vw;">Bongo9911</span>
+                <span style="font-size: 1.5vw;">100</span>
+            </div>
+            <hr/>
+            <div style="display: flex; justify-content: space-between; line-height: 2vw; vertical-align: middle; padding-top: .25vw;">
+                <span style="font-size: 2vw;">nstrain</span>
+                <span style="font-size: 1.5vw;">100</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="this.gameBoard.ended">Hi gamer</div>
