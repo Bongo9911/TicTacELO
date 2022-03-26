@@ -43,7 +43,7 @@ export class RegisterComponent implements OnInit {
     if (this.email.valid && this.name.valid && this.password.valid && this.confirm.valid &&
       this.password.value === this.confirm.value) {
       this.authService.register(this.email.value, this.password.value, this.name.value).then(() => { //Fulfilled
-        addDoc(collection(this.db, "Users"), {email: this.email.value, username: this.name.value});
+        addDoc(collection(this.db, "Users"), {email: this.email.value, username: this.name.value, elo: 1000});
       },
       () => { //Rejected
 

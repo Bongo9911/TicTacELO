@@ -1,9 +1,21 @@
+<div style="position: fixed; background-color: #808080dc; width: 100vw; height: 100vh; top:0; z-index: 99998;" *ngIf="gameData.completed">
+
+</div>
+
+<div style="position: fixed; width: 50vw; height: 30vh; margin-left: 25vw; z-index: 99999; display: flex; flex-direction: column; align-items: center; 
+    justify-content: center; top: 35vh; background-color: white; border-radius: 1vw;"
+    *ngIf="gameData.completed">
+    <h2 style="font-size: 5vw;" *ngIf="gameData.winner === 'D'">It's a draw!</h2>
+    <h2 style="font-size: 5vw;" *ngIf="gameData.winner === 'X'">{{gameData.players[0]}} wins!</h2>
+    <h2 style="font-size: 5vw;" *ngIf="gameData.winner === 'O'">{{gameData.players[1]}} wins!</h2>
+</div>
+
 <div style="display:flex; flex-direction: row; width: 100%; justify-content: center;">
     <div>
-        <div *ngFor="let row of gameBoard.spaces; index as y" style="display: flex; flex-direction: row;">
+        <div *ngFor="let row of gameData.board; index as y" style="display: flex; flex-direction: row;">
             <div *ngFor="let tile of row; index as x"
                 style="width: 10vw; height: 10vw; border: .2vw solid black; font-size: 10vw; text-align: center; vertical-align: middle; line-height: 10vw;"
-                [ngStyle]=" {'color': tile === 'X' ? 'red' : 'blue', 'cursor':  gameBoard.ended || tile !== '' ? 'default' : 'pointer'}"
+                [ngStyle]=" {'color': tile === 'X' ? 'red' : 'blue', 'cursor':  gameData.completed || tile !== '' || playerLetter !== gameData.turn ? 'default' : 'pointer'}"
                 (click)="setSpace(x,y)">
                 {{tile}}
             </div>
@@ -12,16 +24,16 @@
     <div style="height: calc(30vw + 10px); width: 20vw; margin-left: 1vw; display: flex; flex-direction: column; justify-content: center;">
         <div style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; padding: 1vw .5vw; border-radius: .5vw;">
             <div style="display: flex; justify-content: space-between; line-height: 2vw; vertical-align: middle;">
-                <span style="font-size: 2vw; padding-bottom: .25vw;">Bongo9911</span>
-                <span style="font-size: 1.5vw;">100</span>
+                <span style="font-size: 2vw; padding-bottom: .25vw; color: red;">{{gameData.players[0]}}</span>
+                <span style="font-size: 1.5vw;">{{playerElos[0]}}</span>
             </div>
             <hr/>
             <div style="display: flex; justify-content: space-between; line-height: 2vw; vertical-align: middle; padding-top: .25vw;">
-                <span style="font-size: 2vw;">nstrain</span>
-                <span style="font-size: 1.5vw;">100</span>
+                <span style="font-size: 2vw; color: blue;">{{gameData.players[1]}}</span>
+                <span style="font-size: 1.5vw;">{{playerElos[1]}}</span>
             </div>
         </div>
     </div>
 </div>
 
-<div *ngIf="this.gameBoard.ended">Hi gamer</div>
+<div *ngIf="this.gameData.completed">Hi gamer</div>

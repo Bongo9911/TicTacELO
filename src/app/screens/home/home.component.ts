@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Firestore, getFirestore, collection, query, where, getDocs, getDoc, doc, addDoc } from "firebase/firestore";
+import { Firestore, getFirestore, collection, query, where, getDocs, getDoc, doc, addDoc, setDoc, onSnapshot } from "firebase/firestore";
 import { FirebaseApp, initializeApp } from '@firebase/app';
 import { firebaseConfig } from 'src/app/credentials';
 import { getAuth, onAuthStateChanged, Unsubscribe } from '@firebase/auth';
@@ -21,6 +21,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   sub: Subscription;
 
   games: Game[] = [];
+
+  searching: boolean = false;
 
   constructor(private router: Router, private authService: AuthService) {
     this.firebaseApp = initializeApp(firebaseConfig);
@@ -56,7 +58,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           board: this.arrayToMatrix(data.board),
           completed: data.completed,
           gameId: data.gameId,
-          players: data.players
+          players: data.players,
+          turn: data.turn,
+          winner: data.winner
         })
       })
     })
@@ -74,6 +78,20 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     return matrix;
   }
+
+  findMatch() {
+    this.searching = true;
+    addDoc(collection(this.db, "matchmaking"), {user: this.authService.displayName(), code: "", found: false}).then(matchdoc => {
+      const unsub = onSnapshot(doc(this.db, "matchmaking", matchdoc.id), (updatedoc) => {
+        let data = updatedoc.data() as Match;
+        console.log(updatedoc.data());
+        if(data.found) {
+          unsub();
+          this.router.navigate(["/game/ttt/" + data.code]);
+        }
+    });
+    })
+  }
 }
 
 interface Game {
@@ -81,6 +99,8 @@ interface Game {
   completed: boolean,
   gameId: string,
   players: string[],
+  turn: string,
+  winner: string
 }
 
 interface GameFirestore {
@@ -88,4 +108,12 @@ interface GameFirestore {
   completed: boolean,
   gameId: string,
   players: string[],
+  turn: string,
+  winner: string
+}
+
+interface Match {
+  user: string,
+  code: "",
+  found: boolean
 }

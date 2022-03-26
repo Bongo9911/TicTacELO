@@ -1,5 +1,27 @@
-<p>home works!</p>
+<div style="position: fixed; background-color: #808080dc; width: 100vw; height: 100vh; top:0; z-index: 99998;" *ngIf="searching">
 
-<div *ngFor="let game of games">
-    {{game.gameId}}
+</div>
+
+<div style="position: fixed; width: 50vw; height: 30vh; margin-left: 25vw; z-index: 99999; display: flex; flex-direction: column; align-items: center; 
+    justify-content: center; top: 35vh; background-color: white; border-radius: 1vw;"
+    *ngIf="searching">
+    <h2>Searching for a match...</h2>
+    <mat-progress-spinner diameter=100
+	                      mode="indeterminate" 
+						  color="accent">
+	</mat-progress-spinner> 
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <h1 style="font-size: 10vw; margin: 100px 0px;">Tic Tac ELO</h1>
+
+    <button mat-raised-button type="submit" color="primary" (click)="findMatch()">Find a Game</button>
+
+    <hr style="width: 90%; margin-top: 10px;">
+
+    <h2>Active Games</h2>
+
+    <div *ngFor="let game of games">
+        {{game.gameId}}
+    </div>
 </div>
