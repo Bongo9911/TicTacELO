@@ -18,7 +18,7 @@ export class TicTacToeGameComponent implements OnInit {
 
   size: number = 3;
 
-  playerLetter: string = 'X';
+  playerLetter: string = '';
 
   gameId: string = "";
 

@@ -101,6 +101,7 @@ export class AuthService implements OnDestroy {
 				//photoUrl: "url"
 			});
 			this.sendEmailVerification();
+			this.router.navigate([""]);
 		}
 	}
 
