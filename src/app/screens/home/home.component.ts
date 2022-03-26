@@ -25,6 +25,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   searching: boolean = false;
 
+  isAnonymous: boolean = true;
+
   constructor(private router: Router, private authService: AuthService) {
     this.firebaseApp = initializeApp(firebaseConfig);
     this.db = getFirestore(this.firebaseApp);
@@ -35,6 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.authSubscription = onAuthStateChanged(auth, user => {
           if (user) {
             this.updateData();
+            this.isAnonymous = this.authService.isGuest();
           }
         });
       }
