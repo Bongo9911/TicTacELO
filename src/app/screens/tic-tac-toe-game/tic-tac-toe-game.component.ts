@@ -3,7 +3,6 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Firestore, getFirestore, collection, query, where, getDocs, getDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { initializeApp, FirebaseApp } from "firebase/app"
 import { firebaseConfig } from '../../credentials';
-import { FirebaseStorage, getStorage, ref, getDownloadURL } from "firebase/storage";
 import { SubscriptionLike } from 'rxjs';
 import { getAuth, onAuthStateChanged, Unsubscribe } from "firebase/auth";
 import { AuthService } from 'src/app/auth/auth.service';
@@ -25,7 +24,6 @@ export class TicTacToeGameComponent implements OnInit {
 
   firebaseApp: FirebaseApp;
   db: Firestore;
-  storage: FirebaseStorage;
 
   authSubscription?: Unsubscribe;
   sub: SubscriptionLike;
@@ -36,8 +34,6 @@ export class TicTacToeGameComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.gameId = params.id;
     });
-
-    console.log(this.gameId);
 
     this.gameData = {
       board: [],
@@ -58,7 +54,6 @@ export class TicTacToeGameComponent implements OnInit {
 
     this.firebaseApp = initializeApp(firebaseConfig);
     this.db = getFirestore(this.firebaseApp);
-    this.storage = getStorage(this.firebaseApp)
     let auth = getAuth(this.firebaseApp);
     this.sub = router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
@@ -72,9 +67,7 @@ export class TicTacToeGameComponent implements OnInit {
                 this.gameData.turn = data.turn
                 this.gameData.winner = data.winner
 
-                this.playerLetter = this.gameData.players[0] === this.authService.displayName() ? "X" : "O";
-                console.log(this.playerLetter);
-                console.log(this.gameData)
+                this.playerLetter = this.gameData.players[0] === this.authService.displayName() ? "X" : this.gameData.players[1] === this.authService.displayName() ? "O" : "";
 
                 getDocs(query(collection(this.db, "Users"), where("username", "==", this.gameData.players[0]))).then(playerDocs => {
                   if(playerDocs.docs.length) {
@@ -102,15 +95,15 @@ export class TicTacToeGameComponent implements OnInit {
               if(gamedoc.exists()) {
                 let data = gamedoc.data() as GameFirestore
 
+                if(data.players == this.gameData.players.reverse()) {
+                  this.playerElos = this.playerElos.reverse();
+                }
+                this.gameData.players = data.players
+                this.playerLetter = this.gameData.players[0] === this.authService.displayName() ? "X" : this.gameData.players[1] === this.authService.displayName() ? "O" : "";
                 this.gameData.board = this.arrayToMatrix(data.board);
                 this.gameData.completed = data.completed
                 this.gameData.turn = data.turn
                 this.gameData.winner = data.winner
-
-                console.log(data.turn);
-
-                this.updateData();
-                console.log(gamedoc.data());
               }
               else {
                 this.router.navigate([""]);
@@ -120,16 +113,9 @@ export class TicTacToeGameComponent implements OnInit {
         });
       }
     });
-
-    // this.gameBoard.spaces[1][1] = "X";
-    // this.gameBoard.spaces[0][0] = "O";
   }
 
   ngOnInit(): void {
-  }
-
-  updateData() {
-
   }
 
   setSpace(x: number, y: number) {
@@ -138,7 +124,6 @@ export class TicTacToeGameComponent implements OnInit {
 
       for (let i = 0; i < this.size; ++i) {
         if (this.gameData.board[i].every(s => s === this.playerLetter)) {
-          console.log('test');
           this.gameData.completed = true;
           this.gameData.winner = this.playerLetter;
         }
@@ -221,8 +206,6 @@ export class TicTacToeGameComponent implements OnInit {
 
           }
         })
-        console.log(pOneNew);
-        console.log(pTwoNew);
       }
 
       setDoc(doc(this.db, "Games", this.gameId), {
@@ -233,11 +216,35 @@ export class TicTacToeGameComponent implements OnInit {
         turn: this.playerLetter === 'X' ? 'O' : 'X',
         winner: this.gameData.winner
       })
-
-
-      //this.playerLetter = this.playerLetter === 'X' ? 'O' : 'X';
-
     }
+  }
+
+  rematch() {
+    this.gameData.board = [];
+    this.gameData.turn = "X";
+    this.gameData.completed = false;
+    this.gameData.winner = "";
+
+    let emptyarray: string[] = [];
+    for (let i = 0; i < this.size; ++i) {
+      emptyarray.push("");
+    }
+    for (let i = 0; i < this.size; ++i) {
+      this.gameData.board.push([...emptyarray]);
+    }
+
+    this.gameData.players = this.gameData.players.reverse();
+    this.playerElos = this.playerElos.reverse();
+    this.playerLetter = this.playerLetter === 'X' ? 'O' : 'X'
+
+    setDoc(doc(this.db, "Games", this.gameId), {
+      board: this.matrixToArray(this.gameData.board),
+      completed: this.gameData.completed,
+      gameId: this.gameId,
+      players: this.gameData.players,
+      turn: 'X',
+      winner: this.gameData.winner
+    })
   }
 
   arrayToMatrix(arr: string[]): string[][] {

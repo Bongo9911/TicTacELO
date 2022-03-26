@@ -51,7 +51,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   updateData() {
-    getDocs(collection(this.db, "Games")).then(docs => {
+    onSnapshot(query(collection(this.db, "Games"), where("completed", "==", false)), docs => {
+      this.games = [];
       docs.forEach(doc => {
         let data = doc.data() as GameFirestore
         this.games.push({
