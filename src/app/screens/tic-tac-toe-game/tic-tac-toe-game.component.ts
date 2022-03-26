@@ -74,8 +74,8 @@ export class TicTacToeGameComponent implements OnInit {
                     let data = playerDocs.docs[0].data() as {elo: number};
                     this.playerElos[0] = data.elo
                     onSnapshot(doc(this.db, "Users", playerDocs.docs[0].id), player => {
-                      let data = player.data() as {elo: number};
-                      this.playerElos[0] = data.elo
+                      let data = player.data() as {elo: number, username: string};
+                      this.playerElos[this.gameData.players.indexOf(data.username)] = data.elo
                     })
                   }
                 })
@@ -85,8 +85,8 @@ export class TicTacToeGameComponent implements OnInit {
                     let data = playerDocs.docs[0].data() as {elo: number};
                     this.playerElos[1] = data.elo
                     onSnapshot(doc(this.db, "Users", playerDocs.docs[0].id), player => {
-                      let data = player.data() as {elo: number};
-                      this.playerElos[1] = data.elo
+                      let data = player.data() as {elo: number, username: string};
+                      this.playerElos[this.gameData.players.indexOf(data.username)] = data.elo
                     })
                   }
                 })

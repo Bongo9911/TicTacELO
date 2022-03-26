@@ -20,7 +20,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   authSubscription?: Unsubscribe;
   sub: Subscription;
 
-  games: Game[] = [];
+  yourgames: Game[] = [];
+  allgames: Game[] = [];
 
   searching: boolean = false;
 
@@ -51,11 +52,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   updateData() {
-    onSnapshot(query(collection(this.db, "Games"), where("completed", "==", false)), docs => {
-      this.games = [];
+    onSnapshot(query(collection(this.db, "Games"), where("completed", "==", false), where("players", "array-contains", this.authService.displayName())), docs => {
+      this.yourgames = [];
       docs.forEach(doc => {
         let data = doc.data() as GameFirestore
-        this.games.push({
+        this.yourgames.push({
+          board: this.arrayToMatrix(data.board),
+          completed: data.completed,
+          gameId: data.gameId,
+          players: data.players,
+          turn: data.turn,
+          winner: data.winner
+        })
+      })
+    })
+    onSnapshot(query(collection(this.db, "Games"), where("completed", "==", false)), docs => {
+      this.allgames = [];
+      docs.forEach(doc => {
+        let data = doc.data() as GameFirestore
+        this.allgames.push({
           board: this.arrayToMatrix(data.board),
           completed: data.completed,
           gameId: data.gameId,
