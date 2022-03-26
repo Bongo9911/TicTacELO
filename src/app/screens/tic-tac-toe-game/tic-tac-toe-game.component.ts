@@ -80,13 +80,21 @@ export class TicTacToeGameComponent implements OnInit {
                   if(playerDocs.docs.length) {
                     let data = playerDocs.docs[0].data() as {elo: number};
                     this.playerElos[0] = data.elo
+                    onSnapshot(doc(this.db, "Users", playerDocs.docs[0].id), player => {
+                      let data = player.data() as {elo: number};
+                      this.playerElos[0] = data.elo
+                    })
                   }
                 })
 
                 getDocs(query(collection(this.db, "Users"), where("username", "==", this.gameData.players[1]))).then(playerDocs => {
                   if(playerDocs.docs.length) {
-                    let data = playerDocs.docs[1].data() as {elo: number};
+                    let data = playerDocs.docs[0].data() as {elo: number};
                     this.playerElos[1] = data.elo
+                    onSnapshot(doc(this.db, "Users", playerDocs.docs[0].id), player => {
+                      let data = player.data() as {elo: number};
+                      this.playerElos[1] = data.elo
+                    })
                   }
                 })
             })
@@ -193,6 +201,28 @@ export class TicTacToeGameComponent implements OnInit {
           this.gameData.completed = true;
           this.gameData.winner = "D"
         }
+      }
+
+      if(this.gameData.completed) {
+        let pOneExp = 1 / (1 + Math.pow(10, ((this.playerElos[1] - this.playerElos[0])/40)))
+        let pTwoExp = 1 / (1 + Math.pow(10, ((this.playerElos[0] - this.playerElos[1])/40)))
+        let pOneNew = Math.round(this.playerElos[0] + 32 * ((this.gameData.winner === 'X' ? 1 : this.gameData.winner === 'O' ? 0 : 0.5) - pOneExp));
+        let pTwoNew = Math.round(this.playerElos[1] + 32 * ((this.gameData.winner === 'O' ? 1 : this.gameData.winner === 'X' ? 0 : 0.5) - pTwoExp));
+      
+        getDocs(query(collection(this.db, "Users"), where("username", "==", this.gameData.players[0]))).then(playerDocs => {
+          if(playerDocs.docs.length) {
+            setDoc(doc(this.db, "Users", playerDocs.docs[0].id), {elo: pOneNew}, {merge: true})
+          }
+        })
+
+        getDocs(query(collection(this.db, "Users"), where("username", "==", this.gameData.players[1]))).then(playerDocs => {
+          if(playerDocs.docs.length) {
+            setDoc(doc(this.db, "Users", playerDocs.docs[0].id), {elo: pTwoNew}, {merge: true})
+
+          }
+        })
+        console.log(pOneNew);
+        console.log(pTwoNew);
       }
 
       setDoc(doc(this.db, "Games", this.gameId), {
