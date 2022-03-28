@@ -16,36 +16,40 @@
     <button mat-raised-button type="submit" color="primary" (click)="findMatch()" *ngIf="!isAnonymous">Find a Game</button>
 
     <hr style="width: 90%; margin-top: 10px;">
+  
+    <ng-container *ngIf="!isAnonymous">
 
-    <h2 style="font-size: 4vw; line-height: 4vw; margin-top: 1vw;">Your Active Games</h2>
+      <h2 style="font-size: 4vw; line-height: 4vw; margin-top: 1vw;">Your Active Games</h2>
 
-    <div style="width: 80%; left: 10%">
-        <a *ngFor="let game of yourgames" [routerLink]="['/game/ttt/' + game.gameId]">
-            <div 
-                style="width: 30%; display: inline-block; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; margin: 0 1.5%; border-radius: 1vw; cursor: pointer; margin-bottom: 1vw;"
-                >
-                <div style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
-                    <div style="margin-left: 1vw; display: inline-block;">
-                        <div *ngFor="let row of game.board; index as y" style="display: flex; flex-direction: row;">
-                            <div *ngFor="let tile of row; index as x"
-                                style="width: 1vw; height: 1vw; border: .1vw solid black; font-size: 1vw; text-align: center; vertical-align: middle; line-height: 1vw;"
-                                [ngStyle]=" {'color': tile === 'X' ? 'red' : 'blue'}">
-                                {{tile}}
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        style="display: inline-block; display: flex; flex-direction: row; align-items: flex-start; margin-left: .5vw; font-size: 1vw; line-height: 1vw;">
-                        <span style="color: red">{{game.players[0]}}</span>&nbsp;vs.&nbsp;<span
-                            style="color: blue">{{game.players[1]}}</span>
-                    </div>
-                </div>
+      <div style="width: 80%; left: 10%">
+          <a *ngFor="let game of yourgames" [routerLink]="['/game/ttt/' + game.gameId]">
+              <div 
+                  style="width: 30%; display: inline-block; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; margin: 0 1.5%; border-radius: 1vw; cursor: pointer; margin-bottom: 1vw;"
+                  >
+                  <div style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
+                      <div style="margin-left: 1vw; display: inline-block;">
+                          <div *ngFor="let row of game.board; index as y" style="display: flex; flex-direction: row;">
+                              <div *ngFor="let tile of row; index as x"
+                                  style="width: 1vw; height: 1vw; border: .1vw solid black; font-size: 1vw; text-align: center; vertical-align: middle; line-height: 1vw;"
+                                  [ngStyle]=" {'color': tile === 'X' ? 'red' : 'blue'}">
+                                  {{tile}}
+                              </div>
+                          </div>
+                      </div>
+                      <div
+                          style="display: inline-block; display: flex; flex-direction: row; align-items: flex-start; margin-left: .5vw; font-size: 1vw; line-height: 1vw;">
+                          <span style="color: red">{{game.players[0]}}</span>&nbsp;vs.&nbsp;<span
+                              style="color: blue">{{game.players[1]}}</span>
+                      </div>
+                  </div>
 
-            </div>
-        </a>
-    </div>
+              </div>
+          </a>
+      </div>
 
-    <hr style="width: 90%; margin-top: 10px;">
+      <hr style="width: 90%; margin-top: 10px;">
+      
+    </ng-container>
 
     <h2 style="font-size: 4vw; line-height: 4vw; margin-top: 1vw;">All Active Games</h2>
 
