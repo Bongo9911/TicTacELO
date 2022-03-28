@@ -36,8 +36,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (val instanceof NavigationEnd) {
         this.authSubscription = onAuthStateChanged(auth, user => {
           if (user) {
-            this.updateData();
             this.isAnonymous = this.authService.isGuest();
+            this.updateData();
           }
         });
       }
@@ -55,20 +55,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   updateData() {
-    onSnapshot(query(collection(this.db, "Games"), where("completed", "==", false), where("players", "array-contains", this.authService.displayName())), docs => {
-      this.yourgames = [];
-      docs.forEach(doc => {
-        let data = doc.data() as GameFirestore
-        this.yourgames.push({
-          board: this.arrayToMatrix(data.board),
-          completed: data.completed,
-          gameId: data.gameId,
-          players: data.players,
-          turn: data.turn,
-          winner: data.winner
+    if(!this.isAnonymous) {
+      onSnapshot(query(collection(this.db, "Games"), where("completed", "==", false), where("players", "array-contains", this.authService.displayName())), docs => {
+        this.yourgames = [];
+        docs.forEach(doc => {
+          let data = doc.data() as GameFirestore
+          this.yourgames.push({
+            board: this.arrayToMatrix(data.board),
+            completed: data.completed,
+            gameId: data.gameId,
+            players: data.players,
+            turn: data.turn,
+            winner: data.winner
+          })
         })
       })
-    })
+    }
     onSnapshot(query(collection(this.db, "Games"), where("completed", "==", false)), docs => {
       this.allgames = [];
       docs.forEach(doc => {
